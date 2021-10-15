@@ -1,126 +1,29 @@
-
-function ins() {
-		$nomI=isset($_POST['nomI'])?trim($_POST['nomI']):''; // trim pour enlever les espaces avant et apres
-		$prenomI=isset($_POST['prenomI'])?trim($_POST['prenomI']):'';
-		$emailI=isset($_POST['emailI'])?trim($_POST['emailI']):''; // trim pour enlever les espaces avant et apres
-		$numI=isset($_POST['numI'])?trim($_POST['numI']):'';
-		$msg="";
-		
-		if (count($_POST)== 0) require("vue/utilisateur/ins.tpl"); 
-
-		else {
-			if($nomI =='' || $numI =='') {
-				$msg = "inscription échouée : précisez au minimum un nom et un numéro";
-				require("vue/utilisateur/ins.tpl");
+<?php 
+	session_start ();
+	
+	if ((count($_GET)!=0) && !(isset($_GET['controle']) && isset ($_GET['action'])))
+	require ('./vue/erreur404.tpl'); //cas d'un appel à index.php avec des paramètres incorrects
+	
+	else {
+		if ((! isset($_SESSION['profil'])) || count($_GET)==0 )	{
+			if( count($_GET)!=0 && $_GET['controle'] == "utilisateur" &&  $_GET['action'] == "ins") {
+				$controle = "utilisateur"; 
+				$action = "ins";
 			}
 			else {
-				require ("./modele/utilisateurBD.php");
-				
-				if(inscription_bd($nomI,$prenomI,$emailI,$numI))  {		
-					$nexturl = "index.php?controle=utilisateur&action=ident";
-					header ("Location:" . $nexturl);
-					$msg = "inscription réussie";
-				}
-				
-				else {
-					$msg = "inscription échouée : cet utilisateur existe déjà";
-					require("vue/utilisateur/ins.tpl");
-				}
+				$controle = "voiture";   //cas d'une personne non authentifiée
+				$action = "init";		//ou d'un appel à index.php sans paramètre
 			}
 		}
-	}
-
-
-
-
-
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		<title>TP1 contacts - mvc - formulaire d'inscription</title>
-		<link rel="stylesheet" href="vue/styleCSS/utilisateur.css"/>
-		<!-- <script src="script.js"></script> -->
-	</head>
-	<body>
-		<div class="conteneur">
-			
-			
-			<p>
-				Inscription
-			</p>
-			
-			
-			<form action="index.php?controle=utilisateur&action=ins" method="post">
-				<label>nom :</label>
-				<input name="nomI" class="nomI" value="<?php echo $nomI ?>" /> 
-				<label>prénom :</label>
-				<input name="prenomI" class="prenomI" value="<?php echo $prenomI ?>" />
-				<label>mail :</label>
-				<input name="emailI" class="emailI" value="<?php echo $emailI ?>" /> 
-				<label>num :</label>
-				<input name="numI" class="numI" value="<?php echo $numI ?>" /> 
-				<input type= "submit" value= "ok" /> 				
-			</form>
 		
-			<a href = "index.php?controle=utilisateur&action=ident" > Retour a la page de connexion </a>
-		</div>
-		<div id ="m"> <?php echo $msg; ?> </div>
-	</body>
-</html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-function inscription_bd($nomI,$prenomI,$emailI,$numI) {
-		require('modele/connectBD.php');
-		$sql="SELECT * FROM `utilisateur` WHERE nom=:nom AND num = :num";
-		
-		try {
-			$commande = $pdo->prepare($sql);
-			$commande->bindParam(':nom', $nomI);
-			$commande->bindParam(':num', $numI);
-			$bool = $commande->execute();
-			$rechercheP = $commande->fetchAll();
-			
-			if(count($rechercheP) == 0) {
-					$sqlIns = "INSERT INTO utilisateur(id_nom,nom,prenom,num,email) VALUES (:id,'$nomI','$prenomI','$numI','$emailI')";
-					$idm = "SELECT MAX(id_nom) FROM utilisateur LIMIT 1";
-					try {
-						$max = $pdo->prepare($idm);
-						$rechercheInd = $max->execute();
-						$indmax = $max->fetch();
-
-					}
-					
-					catch (PDOException $e) {
-						echo utf8_encode("Echec d'inscriptionBD : " . $e->getMessage() . "\n");
-						die(); // On arrête tout.
-					}
-					
-					
-					$id = intval($indmax[0]) + 1;
-					
-					$cmd = $pdo->prepare($sqlIns);
-					
-					$cmd->bindParam(':id', $id);
-					$test = $cmd->execute();
-					return true;
+		else {
+			if (isset($_GET['controle']) && isset ($_GET['action'])) {
+				$controle = $_GET['controle'];   //cas d'un appel à index.php 
+				$action =  $_GET['action'];	//avec les 2 paramètres controle et action
 			}
-			return false;
 		}
-		
-		catch (PDOException $e) {
-			echo utf8_encode("Echec d'inscriptionBD : " . $e->getMessage() . "\n");
-			die(); // On arrête tout.
-		}
-	}
+		//echo ('controle : ' . $controle . ' et <br/> action : ' . $action);	
+		require ('./controle/' . $controle . '.php');
+		$action(); // On exécute la fonction dont le nom est dans la variable $action
+	} 
+?>
