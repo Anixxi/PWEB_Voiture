@@ -8,7 +8,7 @@
 		<!-- <script src="script.js"></script> -->
 	</head>
 	<body>
-		<!--<img src="./photos/peugot306.jfif"> -->
+		<a href="index.php?controle=loueur&action=inscription" >Voulez-vous s'incrire ?</a>
 
 		<div id="main">
 			<?php
@@ -30,6 +30,8 @@
 					echo ('</table>');
 				}
 				//else echo ('pas de voiture');
+
+
 			?>
 		</div>
 	</body>

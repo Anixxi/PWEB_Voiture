@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  localhost
--- Généré le :  Ven 08 Octobre 2021 à 15:52
+-- Généré le :  Ven 15 Octobre 2021 à 15:49
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.18
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `location`
+-- Base de données :  `projet`
 --
 
 -- --------------------------------------------------------
@@ -29,10 +29,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `client` (
   `id` int(11) NOT NULL,
   `nom` varchar(20) NOT NULL,
-  `pseudo` varchar(20) NOT NULL,
   `email` varchar(20) NOT NULL,
   `mdp` varchar(20) NOT NULL,
-  `nomE` varchar(20) NOT NULL,
   `adresseE` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -40,8 +38,8 @@ CREATE TABLE `client` (
 -- Contenu de la table `client`
 --
 
-INSERT INTO `client` (`id`, `nom`, `pseudo`, `email`, `mdp`, `nomE`, `adresseE`) VALUES
-(1, 'LeBlanc', 'LB', 'fafge@gmail.com', '2002', 'Microsoft', '18 rue victor hugo');
+INSERT INTO `client` (`id`, `nom`, `email`, `mdp`, `adresseE`) VALUES
+(1, 'LeBlanc', 'fafge@gmail.com', '2002', '18 rue victor hugo');
 
 -- --------------------------------------------------------
 
@@ -67,19 +65,22 @@ CREATE TABLE `facture` (
 
 CREATE TABLE `vehicule` (
   `id` int(11) NOT NULL,
-  `type` int(11) NOT NULL,
+  `type` varchar(11) NOT NULL,
   `nb` int(11) NOT NULL,
   `caract` varchar(50) NOT NULL,
   `photo` varchar(50) NOT NULL,
-  `etatL` varchar(20) NOT NULL
+  `etatL` varchar(20) NOT NULL,
+  `tarif` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Contenu de la table `vehicule`
 --
 
-INSERT INTO `vehicule` (`id`, `type`, `nb`, `caract`, `photo`, `etatL`) VALUES
-(1, 306, 1, 'automatique', 'peugot306', 'disponible');
+INSERT INTO `vehicule` (`id`, `type`, `nb`, `caract`, `photo`, `etatL`, `tarif`) VALUES
+(1, '306', 1, 'automatique', 'peugot306', 'disponible', 0),
+(2, 'fiat panda', 1, 'EMA', 'fiatpanda', 'disponible', 0),
+(3, 'ford fiesta', 1, 'manuelle', 'fordfiesta', 'louer', 0);
 
 --
 -- Index pour les tables exportées
@@ -111,7 +112,7 @@ ALTER TABLE `vehicule`
 -- AUTO_INCREMENT pour la table `client`
 --
 ALTER TABLE `client`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT pour la table `facture`
 --
@@ -121,7 +122,7 @@ ALTER TABLE `facture`
 -- AUTO_INCREMENT pour la table `vehicule`
 --
 ALTER TABLE `vehicule`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

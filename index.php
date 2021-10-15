@@ -5,17 +5,24 @@
 	require ('./vue/erreur404.tpl'); //cas d'un appel à index.php avec des paramètres incorrects
 	
 	else {
-		if ((! isset($_SESSION['profil'])) || count($_GET)==0)	{
-			$controle = "voiture";   //cas d'une personne non authentifiée
-			$action = "init";		//ou d'un appel à index.php sans paramètre
+		if ((! isset($_SESSION['profil'])) || count($_GET)==0 )	{
+			if( count($_GET)!=0 && $_GET['controle'] == "loueur" &&  $_GET['action'] == "inscription") {
+				$controle = "loueur"; 
+				$action = "inscription";
+			}
+			else {
+				$controle = "voiture";   //cas d'une personne non authentifiée
+				$action = "init";		//ou d'un appel à index.php sans paramètre
+			}
 		}
+		
 		else {
 			if (isset($_GET['controle']) && isset ($_GET['action'])) {
 				$controle = $_GET['controle'];   //cas d'un appel à index.php 
 				$action =  $_GET['action'];	//avec les 2 paramètres controle et action
 			}
 		}
-		//echo ('controle : ' . $controle . ' et <br/> action : ' . $action);	
+		echo ('controle : ' . $controle . ' et <br/> action : ' . $action);	
 		require ('./controle/' . $controle . '.php');
 		$action(); // On exécute la fonction dont le nom est dans la variable $action
 	} 
