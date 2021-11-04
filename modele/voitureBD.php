@@ -1,7 +1,7 @@
 <?php
 
 function voitures() {
-		require ("Modele/connectBD.php") ; 
+		require ("modele/connectBD.php") ; 
 		$sql="SELECT * FROM vehicule v
 		LIMIT 0,30"; // LIMIT ne marche pas en MS SQL SERVER
 		try {
@@ -21,6 +21,71 @@ function voitures() {
 		return $V;
 	}
 
+	function voituresLoues() {
+		require ("modele/connectBD.php") ; 
+		$id=$_SESSION['profil']['id'];
+		
+		$sql="SELECT v.id , type, dateD, dateF FROM facture f inner join vehicule v on f.idv = v.id WHERE Now() between dateD AND dateF
+		LIMIT 0,30"; // LIMIT ne marche pas en MS SQL SERVER
+		try {
+			
+			$commande = $pdo->prepare($sql);
+			$bool = $commande->execute();
+			$V= array();
+			if ($bool) {
+				while ($v = $commande->fetch()) {
+					$V[] = $v; //stockage dans $C des enregistrements sélectionnés
+				}	
+			}
+			
+		}
+		catch (PDOException $e) {
+			echo utf8_encode("Echec de select : " . $e->getMessage() . "\n");
+			die(); // On arrête tout.
+		}
+		return $V;
+	}
+	
+	function voituresDispos() {
+		require ("modele/connectBD.php") ; 
+		$id=$_SESSION['profil']['id'];
+		$sql="SELECT id,type from vehicule WHERE etatL = \"disponible\"
+		LIMIT 0,30"; // LIMIT ne marche pas en MS SQL SERVER
+		try {
+			
+			$commande = $pdo->prepare($sql);
+			$bool = $commande->execute();
+			$V= array();
+			if ($bool) {
+				while ($v = $commande->fetch()) {
+					$V[] = $v; //stockage dans $C des enregistrements sélectionnés
+				}	
+			}
+			
+		}
+		catch (PDOException $e) {
+			echo utf8_encode("Echec de select : " . $e->getMessage() . "\n");
+			die(); // On arrête tout.
+		}
+		return $V;
+	}
+	
+	
+	function nouvelleLocation($idV) {
+		require ("modele/connectBD.php") ;
+		$sql = "UPDATE vehicule SET etatL = \"" . $_SESSION['profil']['nom'] . "\" WHERE id = " . $idV ;
+		try {
+			
+			$commande = $pdo->prepare($sql);
+			$bool = $commande->execute();;
+		}
+		catch (PDOException $e) {
+			echo utf8_encode("Echec de update : " . $e->getMessage() . "\n");
+			die(); // On arrête tout.
+		}
+	}
+	
+	
     function ins() {
 		$nomI=isset($_POST['nomI'])?trim($_POST['nomI']):''; // trim pour enlever les espaces avant et apres
 		$prenomI=isset($_POST['prenomI'])?trim($_POST['prenomI']):'';

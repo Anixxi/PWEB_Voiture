@@ -1,6 +1,6 @@
 <?php
 	//$hostname = "vs-wamp";
-	$hostname = "localhost:60000";	
+	$hostname = "localhost:49999";	
 	$base= "projet";
 	//$loginBD= "econtact";	
 	$loginBD= "root";	
@@ -23,6 +23,7 @@
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		//echo "Connexion au DSN: ".$dsn." OK! </br>";
 	}
+	
 	catch (PDOException $e) {
 		// affiche (en UTF8) le message d'erreur associé à l'exception
 		echo utf8_encode("Echec de connexion : " . $e->getMessage() . "\n");
